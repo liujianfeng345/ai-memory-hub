@@ -1,7 +1,7 @@
 # 开发进度日志
 
 ## 当前状态
-阶段 4 进行中
+阶段 4 已完成
 
 ---
 
@@ -42,4 +42,13 @@
 
 ## 开始阶段 4 - 核心记忆模块
 开始时间：2026-04-30 22:40
-（进行中...）
+完成时间：2026-04-30 23:15
+产出：
+- 实现 WorkingMemory（短期活跃记忆管理，支持 FIFO/LRU 淘汰策略、容量限制、TTL 过期）
+- 实现 EpisodicMemory（对话事件存储，带时间戳的事件序列，支持时间范围和重要性过滤检索）
+- 实现 SemanticMemory（用户向量化长期知识管理，基于 ChromaStore 的语义检索，支持实体 CRUD）
+- 扩展 ChromaStore 以支持三类记忆的统一存储后端
+- 补充测试 fixtures（内存数据、事件列表）
+- 编写测试套件：test_working_memory.py + test_episodic_memory.py + test_semantic_memory.py
+- 变更报告：docs/dev-plan/CHANGES-phase-4.md
+- 测试报告：docs/dev-plan/test-report-phase-4.md
