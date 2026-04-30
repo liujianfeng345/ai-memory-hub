@@ -1,7 +1,7 @@
 # 开发进度日志
 
 ## 当前状态
-阶段 3 进行中
+阶段 3 已完成
 
 ---
 
@@ -32,4 +32,10 @@
 
 ## 开始阶段 3 - 嵌入层与大模型客户端
 开始时间：2026-04-30 22:00
-（进行中...）
+完成时间：2026-04-30 22:30
+产出：
+- 实现 LocalEmbedder（基于 sentence-transformers 的本地嵌入服务，支持并发安全、懒加载、维度验证）
+- 实现 DeepSeekClient（OpenAI-compatible 大模型客户端，支持 System/User 消息、温度控制、超时重试）
+- 编写测试套件（DeepSeekClient 单元测试 + LocalEmbedder 单元测试）
+- 变更报告：docs/dev-plan/CHANGES-phase-3.md
+- 测试报告：docs/dev-plan/test-report-phase-3.md
