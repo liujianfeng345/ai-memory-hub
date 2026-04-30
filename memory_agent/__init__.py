@@ -1,7 +1,7 @@
 """
 Memory Agent —— 智能记忆代理。
 
-agent-memory 是一个面向 AI Agent 的可插拔记忆管理系统，提供三种记忆类型：
+ai-memory-hub 是一个面向 AI Agent 的可插拔记忆管理系统，提供三种记忆类型：
 - 工作记忆（WorkingMemory）：基于关键词匹配的会话内临时记忆。
 - 情节记忆（EpisodicMemory）：基于向量语义检索的对话/事件记忆，支持自动摘要。
 - 语义记忆（SemanticMemory）：从情节记忆中提取的持久化知识图谱实体。
