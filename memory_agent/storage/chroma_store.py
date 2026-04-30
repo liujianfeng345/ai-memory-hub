@@ -85,10 +85,10 @@ class ChromaStore:
             ) from e
 
     def _get_or_create_collection(self) -> Any:
-        """获取或创建 Collection，处理维度不匹配的情况。
+        """获取或创建 Collection，处理维度/距离度量不匹配的情况。
 
-        若 Collection 已存在且 metadata 中的 embedding_dimension 与
-        当前参数不一致，则记录 warning，删除旧 Collection 并重建。
+        若 Collection 已存在且 metadata 中的 embedding_dimension 或 hnsw:space
+        与预期不一致，则记录 warning，删除旧 Collection 并重建。
 
         Returns:
             ChromaDB Collection 实例。
@@ -100,6 +100,8 @@ class ChromaStore:
             # 尝试获取已存在的 Collection
             existing = self.client.get_collection(name=self.collection_name)
 
+            needs_rebuild = False
+
             # 检查维度是否匹配
             stored_dim = None
             if existing.metadata:
@@ -109,19 +111,36 @@ class ChromaStore:
 
             if stored_dim is not None and stored_dim != self.embedding_dimension:
                 logger.warning(
-                    "Collection '%s' 维度不匹配: 已存储 dim=%d, 请求 dim=%d。将删除旧 Collection 并重建。",
+                    "Collection '%s' 维度不匹配: 已存储 dim=%d, 请求 dim=%d。",
                     self.collection_name,
                     stored_dim,
                     self.embedding_dimension,
                 )
+                needs_rebuild = True
+
+            # 检查距离度量是否匹配（旧 Collection 可能没有此 metadata）
+            stored_space = None
+            if existing.metadata:
+                stored_space = existing.metadata.get("hnsw:space")
+
+            if stored_space is not None and stored_space != "cosine":
+                logger.warning(
+                    "Collection '%s' 距离度量不匹配: 已存储 '%s', 请求 'cosine'。",
+                    self.collection_name,
+                    stored_space,
+                )
+                needs_rebuild = True
+
+            if needs_rebuild:
                 self.client.delete_collection(name=self.collection_name)
                 return self.client.create_collection(
                     name=self.collection_name,
-                    metadata={"embedding_dimension": str(self.embedding_dimension)},
+                    metadata={
+                        "embedding_dimension": str(self.embedding_dimension),
+                        "hnsw:space": "cosine",
+                    },
                 )
 
-            # 维度匹配或未存储维度信息，返回现有 Collection
-            # 若未存储维度信息，则此项为旧版本创建，也不需要重建
             return existing
 
         except ValueError:
@@ -131,10 +150,13 @@ class ChromaStore:
             # 其他异常也可能是 Collection 不存在
             pass
 
-        # 创建新的 Collection
+        # 创建新的 Collection（使用余弦距离以匹配 L2 归一化向量）
         return self.client.create_collection(
             name=self.collection_name,
-            metadata={"embedding_dimension": str(self.embedding_dimension)},
+            metadata={
+                "embedding_dimension": str(self.embedding_dimension),
+                "hnsw:space": "cosine",
+            },
         )
 
     def add(
@@ -367,7 +389,10 @@ class ChromaStore:
         try:
             self.collection = self.client.create_collection(
                 name=collection_name,
-                metadata={"embedding_dimension": str(self.embedding_dimension)},
+                metadata={
+                    "embedding_dimension": str(self.embedding_dimension),
+                    "hnsw:space": "cosine",
+                },
             )
             logger.info("Collection '%s' 已重建 dimension=%d", collection_name, self.embedding_dimension)
         except Exception as e:

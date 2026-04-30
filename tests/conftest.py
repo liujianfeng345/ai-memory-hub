@@ -175,3 +175,99 @@ def mock_deepseek_client() -> "DeepSeekClient":  # type: ignore  # noqa: F821
         client.extract_entities = AsyncMock()
         client._retry_with_backoff = AsyncMock()
         return client
+
+
+# ---------------------------------------------------------------------------
+# 阶段 4: 核心记忆模块 fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def working_memory(in_memory_store: "InMemoryStore") -> "WorkingMemory":  # type: ignore  # noqa: F821
+    """创建 WorkingMemory 实例 fixture。
+
+    使用 in_memory_store 构造 WorkingMemory，每次测试获取独立实例。
+
+    Args:
+        in_memory_store: InMemoryStore fixture。
+
+    Returns:
+        WorkingMemory 实例。
+    """
+    from memory_agent.core.working_memory import WorkingMemory
+
+    return WorkingMemory(store=in_memory_store)
+
+
+@pytest.fixture
+def episodic_memory(
+    tmp_path: Path,
+    embedder: "LocalEmbedder",  # type: ignore  # noqa: F821
+    mock_deepseek_client: "DeepSeekClient",  # type: ignore  # noqa: F821
+) -> Generator["EpisodicMemory", None, None]:  # type: ignore  # noqa: F821
+    """创建 EpisodicMemory 实例 fixture。
+
+    使用临时 ChromaStore（collection="test_episodic"）、embedder 和
+    mock DeepSeekClient，每次测试使用独立数据。
+
+    Args:
+        tmp_path: 临时目录 fixture。
+        embedder: LocalEmbedder fixture。
+        mock_deepseek_client: 模拟的 DeepSeekClient fixture。
+
+    Yields:
+        EpisodicMemory 实例。
+    """
+    from memory_agent.core.episodic_memory import EpisodicMemory
+    from memory_agent.storage.chroma_store import ChromaStore
+
+    persist_dir = str(tmp_path / "test_episodic")
+    chroma_store = ChromaStore(
+        persist_directory=persist_dir,
+        collection_name="test_episodic",
+        embedding_dimension=embedder.dimension,
+    )
+    em = EpisodicMemory(
+        chroma_store=chroma_store,
+        embedder=embedder,
+        llm_client=mock_deepseek_client,
+    )
+    yield em
+    chroma_store.reset()
+
+
+@pytest.fixture
+def semantic_memory(
+    tmp_path: Path,
+    embedder: "LocalEmbedder",  # type: ignore  # noqa: F821
+    mock_deepseek_client: "DeepSeekClient",  # type: ignore  # noqa: F821
+) -> Generator["SemanticMemory", None, None]:  # type: ignore  # noqa: F821
+    """创建 SemanticMemory 实例 fixture。
+
+    使用临时 ChromaStore（collection="test_semantic"）、embedder 和
+    mock DeepSeekClient，每次测试使用独立数据。
+
+    Args:
+        tmp_path: 临时目录 fixture。
+        embedder: LocalEmbedder fixture。
+        mock_deepseek_client: 模拟的 DeepSeekClient fixture。
+
+    Yields:
+        SemanticMemory 实例。
+    """
+    from memory_agent.core.semantic_memory import SemanticMemory
+    from memory_agent.storage.chroma_store import ChromaStore
+
+    persist_dir = str(tmp_path / "test_semantic")
+    chroma_store = ChromaStore(
+        persist_directory=persist_dir,
+        collection_name="test_semantic",
+        embedding_dimension=embedder.dimension,
+    )
+    sm = SemanticMemory(
+        chroma_store=chroma_store,
+        embedder=embedder,
+        llm_client=mock_deepseek_client,
+    )
+    yield sm
+    chroma_store.reset()
