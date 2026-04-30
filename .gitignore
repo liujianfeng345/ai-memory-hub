@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.pyc
+
+# 环境变量
+.env
+
+# 持久化数据目录
+data/
+
+# 向量数据库（旧命名）
+chroma_db/
+
+# 虚拟环境
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# claude
+.claude/
+
+.langgraph_api
+
+# 测试覆盖率
+htmlcov/
+.coverage
+.pytest_cache/
+
+# 类型检查缓存
+.mypy_cache/
+
+# OS
+.DS_Store
+Thumbs.db
