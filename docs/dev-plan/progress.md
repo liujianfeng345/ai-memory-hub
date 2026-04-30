@@ -1,7 +1,7 @@
 # 开发进度日志
 
 ## 当前状态
-阶段 2 已完成
+阶段 3 进行中
 
 ---
 
@@ -29,3 +29,7 @@
 - 通过 ruff lint 静态检查（mypy 8 条错误均为 chromadb 第三方库类型存根不完整导致）
 - 变更报告：docs/dev-plan/CHANGES-phase-2.md
 - 测试报告：docs/dev-plan/test-report-phase-2.md
+
+## 开始阶段 3 - 嵌入层与大模型客户端
+开始时间：2026-04-30 22:00
+（进行中...）
