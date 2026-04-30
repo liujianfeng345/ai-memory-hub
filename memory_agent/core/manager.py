@@ -1,7 +1,7 @@
 """
 MemoryManager —— 总调度器。
 
-MemoryManager 是 memory-agent 的唯一用户入口，承担依赖装配器角色。
+MemoryManager 是 agent-memory 的唯一用户入口，承担依赖装配器角色。
 负责将工作记忆、情节记忆、语义记忆三个子系统协调为一个统一接口，
 提供记忆写入路由、跨类型检索聚合、记忆整合（consolidate）等能力。
 

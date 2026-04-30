@@ -15,7 +15,7 @@ Memory Agent 设计为可被外部 Agent 项目通过 `pip install` 直接集成
 
 ```bash
 git clone <your-repo-url>
-cd memory-agent
+cd agent-memory
 pip install -e .
 ```
 
@@ -117,7 +117,7 @@ LOG_LEVEL=INFO
 
 ```
 +--------------------------------------------------------------+
-|                     memory-agent 总体架构                      |
+|                     agent-memory 总体架构                      |
 +--------------------------------------------------------------+
 |                                                              |
 |  用户代码 / 外部 Agent                                        |
