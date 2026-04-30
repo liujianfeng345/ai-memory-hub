@@ -1,7 +1,7 @@
 # 开发进度日志
 
 ## 当前状态
-阶段 4 已完成
+阶段 5 进行中
 
 ---
 
@@ -52,3 +52,7 @@
 - 编写测试套件：test_working_memory.py + test_episodic_memory.py + test_semantic_memory.py
 - 变更报告：docs/dev-plan/CHANGES-phase-4.md
 - 测试报告：docs/dev-plan/test-report-phase-4.md
+
+## 开始阶段 5 - 总调度器、记忆整合与公开 API
+开始时间：2026-04-30 23:20
+（进行中...）

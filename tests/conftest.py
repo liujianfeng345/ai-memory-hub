@@ -271,3 +271,55 @@ def semantic_memory(
     )
     yield sm
     chroma_store.reset()
+
+
+# ---------------------------------------------------------------------------
+# 阶段 5: MemoryManager fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def manager(
+    tmp_path: Path,
+    embedder: "LocalEmbedder",  # type: ignore  # noqa: F821
+    mock_deepseek_client: "DeepSeekClient",  # type: ignore  # noqa: F821
+) -> Generator["MemoryManager", None, None]:  # type: ignore  # noqa: F821
+    """创建 MemoryManager 实例 fixture。
+
+    使用临时 ChromaDB 目录和 mock DeepSeekClient，
+    每次测试获得独立的 MemoryManager 实例，teardown 时清理 ChromaDB 数据。
+
+    Args:
+        tmp_path: pytest 临时目录。
+        embedder: 模块级别的 LocalEmbedder fixture。
+        mock_deepseek_client: 模拟的 DeepSeekClient fixture。
+
+    Yields:
+        MemoryManager 实例（使用 mock LLM 客户端）。
+    """
+    from unittest.mock import patch
+
+    from memory_agent.core.manager import MemoryManager
+    from memory_agent.utils.config import MemoryConfig
+
+    persist_dir = str(tmp_path / "test_manager_chroma")
+    config = MemoryConfig(
+        deepseek_api_key="sk-test",
+        chroma_persist_dir=persist_dir,
+        log_level="DEBUG",
+    )
+
+    # 使用 patch 替换 DeepSeekClient 的构造，使 MemoryManager 使用 mock 客户端
+    with (
+        patch("memory_agent.core.manager.DeepSeekClient") as mock_ds_cls,
+        patch("memory_agent.core.manager.LocalEmbedder") as mock_emb_cls,
+    ):
+        mock_ds_cls.return_value = mock_deepseek_client
+        mock_emb_cls.return_value = embedder
+
+        mgr = MemoryManager(config=config)
+        yield mgr
+
+    # teardown: 清理 ChromaDB 数据
+    mgr._episodic_store.reset()
+    mgr._semantic_store.reset()
