@@ -5,6 +5,7 @@
 """
 
 import os
+from collections.abc import Generator
 from pathlib import Path
 
 import pytest
@@ -49,3 +50,45 @@ def sample_config(tmp_path: Path) -> "MemoryConfig":  # type: ignore  # noqa: F8
         chroma_persist_dir=str(tmp_path / "chroma"),
         log_level="DEBUG",
     )
+
+
+@pytest.fixture
+def in_memory_store() -> Generator["InMemoryStore", None, None]:  # type: ignore  # noqa: F821
+    """创建全新的 InMemoryStore 实例 fixture。
+
+    每次测试获取一个干净的空 InMemoryStore，测试完成后自动清空。
+
+    Yields:
+        全新的 InMemoryStore 实例。
+    """
+    from memory_agent.storage.in_memory_store import InMemoryStore
+
+    store = InMemoryStore()
+    yield store
+    store.clear()
+
+
+@pytest.fixture
+def chroma_store(tmp_path: Path) -> Generator["ChromaStore", None, None]:  # type: ignore  # noqa: F821
+    """创建 ChromaStore 实例 fixture。
+
+    使用 tmp_path 创建临时持久化目录，每次测试获取独立的 ChromaStore，
+    teardown 时调用 reset() 清理数据。
+
+    Args:
+        tmp_path: pytest 内置 fixture，提供临时目录。
+
+    Yields:
+        配置了临时目录的 ChromaStore 实例。
+    """
+    from memory_agent.storage.chroma_store import ChromaStore
+
+    persist_dir = str(tmp_path / "test_chroma")
+    store = ChromaStore(
+        persist_directory=persist_dir,
+        collection_name="test_collection",
+        embedding_dimension=512,
+    )
+    yield store
+    # teardown: 清理数据
+    store.reset()
