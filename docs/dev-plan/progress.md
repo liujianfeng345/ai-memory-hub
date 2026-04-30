@@ -1,7 +1,7 @@
 # 开发进度日志
 
 ## 当前状态
-阶段 3 已完成
+阶段 4 进行中
 
 ---
 
@@ -39,3 +39,7 @@
 - 编写测试套件（DeepSeekClient 单元测试 + LocalEmbedder 单元测试）
 - 变更报告：docs/dev-plan/CHANGES-phase-3.md
 - 测试报告：docs/dev-plan/test-report-phase-3.md
+
+## 开始阶段 4 - 核心记忆模块
+开始时间：2026-04-30 22:40
+（进行中...）
