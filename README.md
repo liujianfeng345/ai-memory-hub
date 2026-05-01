@@ -11,6 +11,12 @@ Memory Agent 设计为可被外部 Agent 项目通过 `pip install` 直接集成
 
 ## 安装
 
+### 从 PyPI 安装（推荐）
+
+```bash
+pip install ai-memory-hub
+```
+
 ### 从源码安装（开发模式）
 
 ```bash
@@ -19,7 +25,7 @@ cd ai-memory-hub
 pip install -e .
 ```
 
-### 依赖安装
+### 安装开发依赖
 
 ```bash
 pip install -e ".[dev]"
