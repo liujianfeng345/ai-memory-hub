@@ -4,19 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-memory-hub"
-version = "0.1.0"
+version = "0.1.1"
 description = "智能记忆代理 —— 工作记忆管理、情节记忆总结与语义记忆提取"
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
 requires-python = ">=3.10"
 authors = [
-    { name = "liujianfeng", email = "873628264@qq.com"}
+    { name = "liujianfeng", email = "873628264@qq.com" },
+]
+maintainers = [
+    { name = "liujianfeng", email = "873628264@qq.com" },
 ]
 keywords = ["memory", "agent", "llm", "embedding", "chromadb"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -41,6 +43,10 @@ dev = [
     "mypy",
     "pip-audit",
 ]
+
+[project.urls]
+Homepage = "https://pypi.org/project/ai-memory-hub/"
+Repository = "https://github.com/liujianfeng345/ai-memory-hub.git"
 
 [tool.ruff]
 target-version = "py310"
